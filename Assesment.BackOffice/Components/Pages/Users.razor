@@ -1,0 +1,58 @@
+@page "/users"
+@using Assesments.Services
+@using Assesments.Data
+@inject UserServices UserServices
+@inject NavigationManager NavigationManager
+<h3>Users</h3>
+@if (users != null)
+{
+    <table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+
+        @foreach (var user in users)
+            {
+                <tr>
+                    <td>@user.Name</td>
+                    <td>@user.Email</td>
+                    <td>
+                        <a href="@($"/edituser/{user.Id}")">Edit</a> |
+                        <a href="@($"/tasks/{user.Id}")">Tasks</a>
+                        @* <button @onclick="() => DeleteUser(user.Id)">Delete</button> *@
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+}
+else
+{
+    <div>No users</div>
+}
+
+@code {
+
+    private IEnumerable<User> users;
+
+    protected override async Task OnInitializedAsync()
+    {
+        users = await UserServices.GetAllUsersAsync();
+
+    }
+    private void ViewTasks(int userId)
+    {
+        NavigationManager.NavigateTo($"/tasks/{userId}");
+    }
+    @* private async Task DeleteUser(int id)
+{
+await UserRepository.DeleteUserAsync(id);
+users = await UserRepository.GetUsersAsync();
+} *@
+}

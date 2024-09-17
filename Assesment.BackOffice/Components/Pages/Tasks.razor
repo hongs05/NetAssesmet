@@ -1,0 +1,112 @@
+@page "/tasks/{UserId:int}"
+@using Assesments.Services
+@using Assesments.Data
+@inject AssesmentServices AssesmentServices
+@inject NavigationManager Navigation
+
+<h3>Gestión de Tareas</h3>
+@if (tasks != null)
+{
+    <div class="container">
+    <h4>Tareas de @userName</h4>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Título</th>
+                <th>Descripción</th>
+                <th>Fecha de Vencimiento</th>
+                <th>Prioridad</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var task in tasks.OrderBy(t => t.EndDate))
+                {
+                    <tr>
+                        <td>@task.Title</td>
+                        <td>@task.Description</td>
+                        <td>@task.EndDate.ToString("dd/MM/yyyy")</td>
+                        <td>@task.PriorityName</td>
+                        <td>
+                            <button class="btn btn-success" @onclick="() => MarkAsCompleted(task.Id)">Marcar como
+                                Completada</button>
+                            <button class="btn btn-danger" @onclick="() => DeleteTask(task.Id)">Eliminar</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <h4>Add New Task</h4>
+        <EditForm @formName='testing002' Model="newTask" OnValidSubmit="CreateTask">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+            <div class="mb-3">
+                <label>Title</label>
+                <InputText @bind-Value="newTask.Title" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label>Description</label>
+                <InputText @bind-Value="newTask.Description" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label>End Date</label>
+                <InputDate @bind-Value="newTask.EndDate" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label>Priority</label>
+                <select @bind="newTask.PriorityId" class="form-control">
+                    <option value="">Select Priority</option>
+                    @foreach (var priority in priorities)
+                    {
+                        <option value="@priority.Id">@priority.Name</option>
+                    }
+                </select>
+            </div>
+            <button type="submit" class="btn btn-success">Add Task</button>
+        </EditForm>
+    </div>
+}
+
+@code {
+    [Parameter] public int UserId { get; set; }
+
+    private List<AsssesmentDto> tasks;
+    private string userName;
+    private Assesment newTask = new Assesment();
+    private List<Priority> priorities = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        tasks = await AssesmentServices.GetTasksByUserAsync(UserId);
+        userName = (await AssesmentServices.GetUserByIdAsync(UserId))?.Name;
+        priorities = await AssesmentServices.GetAllPrioritiesAsync();
+        newTask.UserId = UserId; // Para asociar la tarea al usuario
+    }
+    private async Task CreateTask()
+    {
+        newTask.UserId = UserId;
+        await AssesmentServices.CreateTaskAsync(newTask);
+        tasks = await AssesmentServices.GetTasksByUserAsync(UserId); // Refresh task list
+        newTask = new(); // Clear the form
+    }
+
+    @* private async Task CreateTask()
+{
+await AssesmentServices.CreateTaskAsync(newTask);
+tasks = await AssesmentServices.GetTasksByUserAsync(UserId);
+newTask = new Assesment { UserId = UserId };
+} *@
+
+    private async Task DeleteTask(int taskId)
+    {
+        await AssesmentServices.DeleteTaskAsync(taskId);
+        tasks = await AssesmentServices.GetTasksByUserAsync(UserId);
+    }
+
+    private async Task MarkAsCompleted(int taskId)
+    {
+        await AssesmentServices.MarkTaskAsCompletedAsync(taskId);
+        tasks = await AssesmentServices.GetTasksByUserAsync(UserId);
+    }
+}

@@ -1,0 +1,103 @@
+# Ignore the build outputs
+bin/
+obj/
+
+# Ignore user-specific files
+*.user
+*.rsuser
+*.suo
+*.userosscache
+*.sln.docstates
+
+# ASP.NET Core
+appsettings.*.json
+appsettings.json
+
+# Don't track secrets
+secrets.json
+
+
+# Ignore any lock files
+project.lock.json
+project.fragment.lock.json
+*.lock.json
+*.log
+
+# Ignore generated packages and build files
+**/bin/
+**/obj/
+
+# Ignore VSCode settings
+.vscode/
+.vscode/*
+
+# Ignore Rider/JetBrains settings
+.idea/
+.idea/*
+.idea_modules/
+*.sln.iml
+
+# Ignore ReSharper settings
+_ReSharper*/
+*.DotSettings.user
+
+# Ignore the database and local settings
+*.db
+*.mdf
+*.ldf
+
+# Ignore the package dependency folders
+node_modules/
+dist/
+npm-debug.log*
+
+# Ignore generated files by Visual Studio
+*.vs/
+.vs/
+*.tsscache
+*.ncrunchsolution
+.vscode/
+
+# Ignore coverage files
+coverage/
+coverage.info
+
+# Ignore build and test output files
+TestResults/
+.DS_Store
+
+# Ignore temporary files
+*.swp
+*.swn
+
+# Ignore logs
+*.log
+logs/
+
+# Ignore publish outputs
+publish/
+publish/*
+
+# Ignore configuration files containing sensitive data
+*.config
+
+# Ignore compiled TypeScript files (if applicable)
+*.tsbuildinfo
+
+# Ignore docker and containerization
+docker-compose.override.yml
+.docker/
+Dockerfile
+
+# Ignore environment-specific settings (for example, if using Docker or Kubernetes)
+.env
+.env.local
+.env.development
+.env.production
+.env.test
+
+# Ignore macOS files
+.DS_Store
+
+# Ignore Windows specific files
+Thumbs.db
